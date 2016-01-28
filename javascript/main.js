@@ -1,9 +1,13 @@
 $(document).ready(function () {
     var hour = get12Hour(),
         chimeCount,
-        audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "clock-chime.mp3");
-    audioElement.setAttribute("type", "audio/mpeg");
+        chimeAudioElement = document.createElement("audio"),
+        tickAudioElement = document.createElement("audio");
+    chimeAudioElement.setAttribute("src", "clock-chime.mp3");
+    chimeAudioElement.setAttribute("type", "audio/mpeg");
+    tickAudioElement.setAttribute("src", "clock-tick.mp3");
+    tickAudioElement.setAttribute("type", "audio/mpeg");
+    
     setInterval(timer, 1000);
     
     function timer() {
@@ -20,18 +24,28 @@ $(document).ready(function () {
             $(".clock").addClass("blink");
             chimeCount = hour;
             playChime();
+        } else if (chimeAudioElement.paused) {
+            playTick();
         }
     }
     
     function playChime() {
         if (chimeCount > 0) {
-            audioElement.load();
-            audioElement.play();
+            chimeAudioElement.load();
+            chimeAudioElement.play();
             chimeCount -= 1;
             setTimeout(playChime, 3500);
         } else {
             $(".clock").removeClass("blink");
         }
+    }
+    
+    function playTick() {
+        tickAudioElement.load();
+        tickAudioElement.play();
+        setTimeout(function(){
+            tickAudioElement.pause();
+        }, 300);
     }
     
     function get12Hour() {
